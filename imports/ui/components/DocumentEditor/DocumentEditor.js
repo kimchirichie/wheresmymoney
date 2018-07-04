@@ -2,10 +2,37 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, Button } from 'react-bootstrap';
+import moment from 'moment';
+import { FormGroup, ControlLabel, Button, FormControl, Radio, Checkbox } from 'react-bootstrap';
 import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
 import validate from '../../../modules/validate';
+
+const categories = [
+  'dining',
+  'coffee',
+  'transportation',
+  'leisure',
+  'fitness',
+  'fashion',
+  'accommodation',
+  'groceries',
+  'entertainment',
+  'living',
+  'education',
+  'car',
+  'phone',
+  'fee',
+  'alcohol',
+  'electronics',
+  'gift',
+  'home',
+  'donation',
+  'insurance',
+  'work',
+  'refund',
+  'other income',
+];
 
 class DocumentEditor extends React.Component {
   componentDidMount() {
@@ -59,26 +86,57 @@ class DocumentEditor extends React.Component {
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
         <FormGroup>
-          <ControlLabel>Title</ControlLabel>
+          <ControlLabel>Date</ControlLabel>
           <input
-            type="text"
+            type="date"
             className="form-control"
-            name="title"
-            defaultValue={doc && doc.title}
-            placeholder="Oh, The Places You'll Go!"
+            name="date"
+            defaultValue={doc && doc.date ? doc.date : moment().format('YYYY-MM-DD')}
           />
         </FormGroup>
         <FormGroup>
-          <ControlLabel>Body</ControlLabel>
-          <textarea
+          <ControlLabel>Amount</ControlLabel>
+          <input
+            type="number"
             className="form-control"
-            name="body"
-            defaultValue={doc && doc.body}
-            placeholder="Congratulations! Today is your day. You're off to Great Places! You're off and away!"
+            name="amount"
+            placeholder="9.99"
+            step={0.01}
+            defaultValue={doc && doc.amount}
           />
         </FormGroup>
-        <Button type="submit" bsStyle="success">
-          {doc && doc._id ? 'Save Changes' : 'Add Document'}
+        <FormGroup>
+          <ControlLabel>Category</ControlLabel>
+          <FormControl
+            componentClass="select"
+            name="category"
+            placeholder="select category"
+            defaultValue={doc && doc.category ? doc.category : categories[0]}
+          >
+            {categories.map(category => <option key={category} value={category}>{category}</option>)}
+          </FormControl>
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Payment</ControlLabel>
+          <Radio name="payment" inline>credit</Radio>
+          <Radio name="payment" inline>debit</Radio>
+          <Radio name="payment" inline>cash</Radio>
+        </FormGroup>
+        <Checkbox name="recurring">
+            Recurring?
+        </Checkbox>
+        <FormGroup>
+          <ControlLabel>Description</ControlLabel>
+          <input
+            type="text"
+            className="form-control"
+            name="description"
+            defaultValue={doc && doc.description}
+            placeholder="dinner at mels"
+          />
+        </FormGroup>
+        <Button type="submit" bsStyle="success" block>
+          {doc && doc._id ? 'Save Changes' : 'Submit Expense'}
         </Button>
       </form>
     );

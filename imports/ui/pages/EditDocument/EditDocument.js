@@ -8,7 +8,7 @@ import NotFound from '../NotFound/NotFound';
 
 const EditDocument = ({ doc, history }) => (doc ? (
   <div className="EditDocument">
-    <h4 className="page-header">{`Editing "${doc.title}"`}</h4>
+    <h4 className="page-header">{'Editing Expense'}</h4>
     <DocumentEditor doc={doc} history={history} />
   </div>
 ) : <NotFound />);

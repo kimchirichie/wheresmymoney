@@ -18,8 +18,12 @@ Meteor.methods({
   },
   'documents.insert': function documentsInsert(doc) {
     check(doc, {
-      title: String,
-      body: String,
+      date: String,
+      amount: Number,
+      category: String,
+      payment: String,
+      recurring: Boolean,
+      description: String,
     });
 
     try {

@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Bert } from 'meteor/themeteorchef:bert';
+import moment from 'moment';
 import DocumentsCollection from '../../../api/Documents/Documents';
 import { timeago, monthDayYearAtTime } from '../../../modules/dates';
 import Loading from '../../components/Loading/Loading';
@@ -41,39 +42,23 @@ const Documents = ({
       <Table responsive>
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Last Updated</th>
-            <th>Created</th>
-            <th />
-            <th />
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Method</th>
+            <th>Description</th>
           </tr>
         </thead>
         <tbody>
           {documents.map(({
-            _id, title, createdAt, updatedAt,
+            _id, date, amount, category, payment, description,
           }) => (
-            <tr key={_id}>
-              <td>{title}</td>
-              <td>{timeago(updatedAt)}</td>
-              <td>{monthDayYearAtTime(createdAt)}</td>
-              <td>
-                <Button
-                  bsStyle="primary"
-                  onClick={() => history.push(`${match.url}/${_id}`)}
-                  block
-                >
-                  View
-                </Button>
-              </td>
-              <td>
-                <Button
-                  bsStyle="danger"
-                  onClick={() => handleRemove(_id)}
-                  block
-                >
-                  Delete
-                </Button>
-              </td>
+            <tr key={_id} onClick={() => history.push(`${match.url}/${_id}/edit`)}>
+              <td>{ moment(date).format('MMM/D') }</td>
+              <td>{ amount }</td>
+              <td>{ category }</td>
+              <td>{ payment }</td>
+              <td>{ description }</td>
             </tr>
           ))}
         </tbody>

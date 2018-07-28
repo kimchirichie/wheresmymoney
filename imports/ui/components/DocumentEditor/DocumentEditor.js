@@ -63,8 +63,12 @@ class DocumentEditor extends React.Component {
     const existingDocument = this.props.doc && this.props.doc._id;
     const methodToCall = existingDocument ? 'documents.update' : 'documents.insert';
     const doc = {
-      title: form.title.value.trim(),
-      body: form.body.value.trim(),
+      date: form.date.value,
+      amount: Number(form.amount.value),
+      category: form.category.value.trim(),
+      payment: form.payment.value.trim(),
+      recurring: Boolean(form.payment.value),
+      description: form.description.value.trim(),
     };
 
     if (existingDocument) doc._id = existingDocument;
@@ -76,7 +80,7 @@ class DocumentEditor extends React.Component {
         const confirmation = existingDocument ? 'Document updated!' : 'Document added!';
         this.form.reset();
         Bert.alert(confirmation, 'success');
-        history.push(`/documents/${documentId}`);
+        history.push('/documents');
       }
     });
   }

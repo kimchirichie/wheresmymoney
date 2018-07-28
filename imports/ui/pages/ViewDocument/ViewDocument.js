@@ -7,7 +7,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
 import Documents from '../../../api/Documents/Documents';
-import SEO from '../../components/SEO/SEO';
+// import SEO from '../../components/SEO/SEO';
 import NotFound from '../NotFound/NotFound';
 
 const handleRemove = (documentId, history) => {
@@ -25,15 +25,6 @@ const handleRemove = (documentId, history) => {
 
 const renderDocument = (doc, match, history) => (doc ? (
   <div className="ViewDocument">
-    <SEO
-      title={doc.title}
-      description={doc.body}
-      url={`documents/${doc._id}`}
-      contentType="article"
-      published={doc.createdAt}
-      updated={doc.updatedAt}
-      twitter="clvrbgl"
-    />
     <div className="page-header clearfix">
       <h4 className="pull-left">{ doc && doc.title }</h4>
       {Meteor.isClient && Meteor.userId() ? (

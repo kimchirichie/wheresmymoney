@@ -62,7 +62,7 @@ const StyledApp = styled.div`
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { ready: false, afterLoginPath: null };
+    this.state = { ready: false, afterLoginPath: '/documents' };
     autoBind(this);
   }
 
@@ -95,7 +95,7 @@ class App extends React.Component {
         <Navigation {...props} {...state} />
         <Grid>
           <Switch>
-            <Route exact name="index" path="/" component={Index} />
+            <Public exact name="index" path="/" component={Index} {...props} {...state} />
             <Authenticated exact path="/documents" component={Documents} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
             <Authenticated exact path="/documents/new" component={NewDocument} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
             <Route exact path="/documents/:_id" component={ViewDocument} />

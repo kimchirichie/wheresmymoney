@@ -86,6 +86,6 @@ export default withTracker(() => {
   const subscription = Meteor.subscribe('documents');
   return {
     loading: !subscription.ready(),
-    documents: DocumentsCollection.find().fetch(),
+    documents: DocumentsCollection.find({}, { sort: { date: -1 } }).fetch(),
   };
 })(Documents);

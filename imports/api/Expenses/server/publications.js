@@ -2,8 +2,14 @@ import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import Expenses from '../Expenses';
 
-Meteor.publish('expenses', function expenses() {
-  return Expenses.find({ owner: this.userId });
+const MAX_TODOS = 1000;
+
+Meteor.publish('expenses', function expenses(limit, searchTerm) {
+  check(limit, Number);
+  check(searchTerm, String);
+  const query = { owner: this.userId };
+  if (searchTerm) query.description = searchTerm;
+  return Expenses.find(query, { sort: { date: -1 }, limit: Math.min(limit, MAX_TODOS) });
 });
 
 // Note: expenses.view is also used when editing an existing expense.

@@ -3,21 +3,21 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
-const Documents = new Mongo.Collection('expenses');
+const Expenses = new Mongo.Collection('expenses');
 
-Documents.allow({
+Expenses.allow({
   insert: () => false,
   update: () => false,
   remove: () => false,
 });
 
-Documents.deny({
+Expenses.deny({
   insert: () => true,
   update: () => true,
   remove: () => true,
 });
 
-Documents.schema = new SimpleSchema({
+Expenses.schema = new SimpleSchema({
   owner: {
     type: String,
     label: 'The ID of the user this document belongs to.',
@@ -37,7 +37,7 @@ Documents.schema = new SimpleSchema({
     },
   },
   date: {
-    type: String,
+    type: Date,
     label: 'The date of the expense.',
   },
   amount: {
@@ -62,6 +62,6 @@ Documents.schema = new SimpleSchema({
   },
 });
 
-Documents.attachSchema(Documents.schema);
+Expenses.attachSchema(Expenses.schema);
 
-export default Documents;
+export default Expenses;

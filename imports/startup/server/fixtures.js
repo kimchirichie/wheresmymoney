@@ -1,17 +1,21 @@
 import seeder from '@cleverbeagle/seeder';
 import { Meteor } from 'meteor/meteor';
-import Documents from '../../api/Documents/Documents';
+import Expenses from '../../api/Expenses/Expenses';
 
-const documentsSeed = userId => ({
-  collection: Documents,
+const expensesSeed = userId => ({
+  collection: Expenses,
   environments: ['development', 'staging'],
   noLimit: true,
   modelCount: 5,
   model(dataIndex) {
     return {
       owner: userId,
-      title: `Document #${dataIndex + 1}`,
-      body: `This is the body of document #${dataIndex + 1}`,
+      date: '2018-01-01',
+      amount: 9.99,
+      category: 'dining',
+      payment: 'credit',
+      recurring: false,
+      description: 'dinner at mels',
     };
   },
 });
@@ -30,7 +34,7 @@ seeder(Meteor.users, {
     },
     roles: ['admin'],
     data(userId) {
-      return documentsSeed(userId);
+      return expensesSeed(userId);
     },
   }],
   modelCount: 5,
@@ -47,7 +51,7 @@ seeder(Meteor.users, {
       },
       roles: ['user'],
       data(userId) {
-        return documentsSeed(userId);
+        return expensesSeed(userId);
       },
     };
   },

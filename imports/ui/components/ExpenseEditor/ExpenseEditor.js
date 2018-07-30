@@ -34,24 +34,42 @@ const categories = [
   'other income',
 ];
 
-class DocumentEditor extends React.Component {
+class ExpenseEditor extends React.Component {
   componentDidMount() {
     const component = this;
     validate(component.form, {
       rules: {
-        title: {
+        date: {
           required: true,
         },
-        body: {
+        amount: {
+          required: true,
+        },
+        category: {
+          required: true,
+        },
+        payment: {
+          required: true,
+        },
+        description: {
           required: true,
         },
       },
       messages: {
-        title: {
-          required: 'Need a title in here, Seuss.',
+        date: {
+          required: 'needs date to be filled in',
         },
-        body: {
-          required: 'This thneeds a body, please.',
+        amount: {
+          required: 'needs amount to be filled in',
+        },
+        category: {
+          required: 'needs category to be filled in',
+        },
+        payment: {
+          required: 'needs payment to be filled in',
+        },
+        description: {
+          required: 'needs description to be filled in',
         },
       },
       submitHandler() { component.handleSubmit(component.form); },
@@ -60,10 +78,10 @@ class DocumentEditor extends React.Component {
 
   handleSubmit(form) {
     const { history } = this.props;
-    const existingDocument = this.props.doc && this.props.doc._id;
-    const methodToCall = existingDocument ? 'documents.update' : 'documents.insert';
-    const doc = {
-      date: form.date.value,
+    const existingExpense = this.props.exp && this.props.exp._id;
+    const methodToCall = existingExpense ? 'expenses.update' : 'expenses.insert';
+    const exp = {
+      date: new Date(form.date.value),
       amount: Number(form.amount.value),
       category: form.category.value.trim(),
       payment: form.payment.value.trim(),
@@ -71,22 +89,22 @@ class DocumentEditor extends React.Component {
       description: form.description.value.trim(),
     };
 
-    if (existingDocument) doc._id = existingDocument;
+    if (existingExpense) exp._id = existingExpense;
 
-    Meteor.call(methodToCall, doc, (error, documentId) => {
+    Meteor.call(methodToCall, exp, (error, expenseId) => {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
-        const confirmation = existingDocument ? 'Document updated!' : 'Document added!';
+        const confirmation = existingExpense ? 'Expense updated!' : 'Expense added!';
         this.form.reset();
         Bert.alert(confirmation, 'success');
-        history.push('/documents');
+        history.push('/expenses');
       }
     });
   }
 
   render() {
-    const { doc } = this.props;
+    const { exp } = this.props;
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
         <FormGroup>
@@ -95,7 +113,7 @@ class DocumentEditor extends React.Component {
             type="date"
             className="form-control"
             name="date"
-            defaultValue={doc && doc.date ? doc.date : moment().format('YYYY-MM-DD')}
+            defaultValue={exp && exp.date ? moment.utc(exp.date).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')}
           />
         </FormGroup>
         <FormGroup>
@@ -106,7 +124,7 @@ class DocumentEditor extends React.Component {
             name="amount"
             placeholder="9.99"
             step={0.01}
-            defaultValue={doc && doc.amount}
+            defaultValue={exp && exp.amount}
           />
         </FormGroup>
         <FormGroup>
@@ -115,14 +133,14 @@ class DocumentEditor extends React.Component {
             componentClass="select"
             name="category"
             placeholder="select category"
-            defaultValue={doc && doc.category ? doc.category : categories[0]}
+            defaultValue={exp && exp.category ? exp.category : categories[0]}
           >
             {categories.map(category => <option key={category} value={category}>{category}</option>)}
           </FormControl>
         </FormGroup>
         <FormGroup>
           <ControlLabel>Payment</ControlLabel>
-          <Radio name="payment" inline>credit</Radio>
+          <Radio name="payment" inline defaultChecked>credit</Radio>
           <Radio name="payment" inline>debit</Radio>
           <Radio name="payment" inline>cash</Radio>
         </FormGroup>
@@ -135,25 +153,25 @@ class DocumentEditor extends React.Component {
             type="text"
             className="form-control"
             name="description"
-            defaultValue={doc && doc.description}
+            defaultValue={exp && exp.description}
             placeholder="dinner at mels"
           />
         </FormGroup>
         <Button type="submit" bsStyle="success" block>
-          {doc && doc._id ? 'Save Changes' : 'Submit Expense'}
+          {exp && exp._id ? 'Save Changes' : 'Submit Expense'}
         </Button>
       </form>
     );
   }
 }
 
-DocumentEditor.defaultProps = {
-  doc: { title: '', body: '' },
+ExpenseEditor.defaultProps = {
+  exp: { title: '', body: '' },
 };
 
-DocumentEditor.propTypes = {
-  doc: PropTypes.object,
+ExpenseEditor.propTypes = {
+  exp: PropTypes.object,
   history: PropTypes.object.isRequired,
 };
 
-export default DocumentEditor;
+export default ExpenseEditor;

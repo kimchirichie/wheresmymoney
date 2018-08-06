@@ -42,9 +42,10 @@ class Expenses extends React.Component {
   }
 
   render() {
-    return (!this.props.loading ? (
+    return (!this.props.loading || this.props.expenses.length ? (
       <StyledExpenses>
-        <Link className="btn btn-success" to={`${this.props.match.url}/new`}>Add Expense</Link>
+        <Link className="btn btn-success d-block" style={{display:"block"}} to={`${this.props.match.url}/new`}>Add Expense</Link>
+        <br />
         <form onSubmit={event => event.preventDefault()}>
           <FormGroup>
             <InputGroup>
@@ -56,13 +57,13 @@ class Expenses extends React.Component {
           </FormGroup>
         </form>
         {this.props.expenses.length ?
-          <Table responsive hover>
+          <Table hover>
             <thead>
               <tr>
                 <th>Date</th>
-                <th>Amount</th>
-                <th className="hidden-sm">Category</th>
-                <th className="hidden-sm">Method</th>
+                <th className="text-right">Amount</th>
+                <th className="hidden-xs hidden-sm">Category</th>
+                <th className="hidden-xs hidden-sm">Method</th>
                 <th>Description</th>
               </tr>
             </thead>
@@ -72,9 +73,9 @@ class Expenses extends React.Component {
               }) => (
                 <tr key={_id} onClick={() => this.props.history.push(`${this.props.match.url}/${_id}/edit`)}>
                   <td>{ moment.utc(date).format('MMM/D') }</td>
-                  <td>{ amount.toFixed(2) }</td>
-                  <td className="hidden-sm">{ category }</td>
-                  <td className="hidden-sm">{ payment }</td>
+                  <td className="text-right">{ amount.toFixed(2) }</td>
+                  <td className="hidden-xs hidden-sm">{ category }</td>
+                  <td className="hidden-xs hidden-sm">{ payment }</td>
                   <td>{ description }</td>
                 </tr>
               ))}

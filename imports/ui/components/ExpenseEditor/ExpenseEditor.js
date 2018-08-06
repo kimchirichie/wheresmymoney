@@ -77,6 +77,7 @@ class ExpenseEditor extends React.Component {
   }
 
   handleSubmit(form) {
+    console.log(form.payment);
     const { history } = this.props;
     const existingExpense = this.props.exp && this.props.exp._id;
     const methodToCall = existingExpense ? 'expenses.update' : 'expenses.insert';
@@ -140,9 +141,9 @@ class ExpenseEditor extends React.Component {
         </FormGroup>
         <FormGroup>
           <ControlLabel>Payment</ControlLabel>
-          <Radio name="payment" inline defaultChecked>credit</Radio>
-          <Radio name="payment" inline>debit</Radio>
-          <Radio name="payment" inline>cash</Radio>
+          <Radio name="payment" value="credit" inline defaultChecked>credit</Radio>
+          <Radio name="payment" value="debit" inline>debit</Radio>
+          <Radio name="payment" value="cash" inline>cash</Radio>
         </FormGroup>
         <Checkbox name="recurring">
             Recurring?

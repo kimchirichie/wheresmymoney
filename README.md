@@ -1,8 +1,18 @@
-### Pup
-A boilerplate for products.
+# Building production package
 
-[Read the Documentation](http://cleverbeagle.com/pup)
+Run the following command to export settings, and build production
 
----
+```sh
+$ export METEOR_SETTINGS="$(cat settings-development.json )"
+$ meteor build /output/path --server-only
+```
 
-Need help and want to stay accountable building your product? [Check out Clever Beagle](http://cleverbeagle.com).
+# Unpack and run server
+
+Unpack, install packages, and run forever
+
+```sh
+$ tar -xzf moneyapp.tar.gz
+$ (cd bundle/programs/server && npm install)
+$ forver start bundle/main.js
+```

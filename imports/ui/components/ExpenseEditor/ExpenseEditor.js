@@ -39,38 +39,18 @@ class ExpenseEditor extends React.Component {
     const component = this;
     validate(component.form, {
       rules: {
-        date: {
-          required: true,
-        },
-        amount: {
-          required: true,
-        },
-        category: {
-          required: true,
-        },
-        payment: {
-          required: true,
-        },
-        description: {
-          required: true,
-        },
+        date: { required: true },
+        amount: { required: true },
+        category: { required: true },
+        payment: { required: true },
+        description: { required: true },
       },
       messages: {
-        date: {
-          required: 'needs date to be filled in',
-        },
-        amount: {
-          required: 'needs amount to be filled in',
-        },
-        category: {
-          required: 'needs category to be filled in',
-        },
-        payment: {
-          required: 'needs payment to be filled in',
-        },
-        description: {
-          required: 'needs description to be filled in',
-        },
+        date: { required: 'needs date to be filled in' },
+        amount: { required: 'needs amount to be filled in' },
+        category: { required: 'needs category to be filled in' },
+        payment: { required: 'needs payment to be filled in' },
+        description: { required: 'needs description to be filled in' },
       },
       submitHandler() { component.handleSubmit(component.form); },
     });

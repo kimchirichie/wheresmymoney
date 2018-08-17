@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Table, Alert, Button, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
+import { Table, Button, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
@@ -9,7 +9,6 @@ import { Bert } from 'meteor/themeteorchef:bert';
 import moment from 'moment';
 import { ReactiveVar } from 'meteor/reactive-var';
 import ExpensesCollection from '../../../api/Expenses/Expenses';
-import { timeago, monthDayYearAtTime } from '../../../modules/dates';
 import Loading from '../../components/Loading/Loading';
 import BlankState from '../../components/BlankState/BlankState';
 
@@ -27,18 +26,6 @@ class Expenses extends React.Component {
   constructor(props) {
     super(props);
     this.state = { searchTerm: '' };
-  }
-
-  handleRemove(expenseId) {
-    if (confirm('Are you sure? This is permanent!')) {
-      Meteor.call('expenses.remove', expenseId, (error) => {
-        if (error) {
-          Bert.alert(error.reason, 'danger');
-        } else {
-          Bert.alert('Expense deleted!', 'success');
-        }
-      });
-    }
   }
 
   render() {

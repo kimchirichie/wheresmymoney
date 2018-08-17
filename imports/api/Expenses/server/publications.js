@@ -8,7 +8,7 @@ Meteor.publish('expenses', function expenses(limit, searchTerm) {
   check(limit, Number);
   check(searchTerm, String);
   const query = { owner: this.userId };
-  if (searchTerm) query.description = searchTerm;
+  if (searchTerm) query.description = { $regex: `.*${searchTerm}.*`, $options: 'i' };
   return Expenses.find(query, { sort: { date: -1 }, limit: Math.min(limit, MAX_TODOS) });
 });
 

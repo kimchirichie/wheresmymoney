@@ -77,7 +77,6 @@ class ExpenseEditor extends React.Component {
   }
 
   handleSubmit(form) {
-    console.log(form.payment);
     const { history } = this.props;
     const existingExpense = this.props.exp && this.props.exp._id;
     const methodToCall = existingExpense ? 'expenses.update' : 'expenses.insert';
@@ -92,13 +91,25 @@ class ExpenseEditor extends React.Component {
 
     if (existingExpense) exp._id = existingExpense;
 
-    Meteor.call(methodToCall, exp, (error, expenseId) => {
+    Meteor.call(methodToCall, exp, (error) => {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
         const confirmation = existingExpense ? 'Expense updated!' : 'Expense added!';
         this.form.reset();
         Bert.alert(confirmation, 'success');
+        history.push('/expenses');
+      }
+    });
+  }
+
+  handleRemove() {
+    const { history } = this.props;
+    Meteor.call('expenses.remove', this.props.exp._id, (error) => {
+      if (error) {
+        Bert.alert(error.reason, 'danger');
+      } else {
+        Bert.alert('Expense Deleted!', 'success');
         history.push('/expenses');
       }
     });
@@ -161,6 +172,9 @@ class ExpenseEditor extends React.Component {
         <Button type="submit" bsStyle="success" block>
           {exp && exp._id ? 'Save Changes' : 'Submit Expense'}
         </Button>
+        { exp && exp._id
+        ? <Button type="button" bsStyle="danger" block onClick={() => this.handleRemove()}>Delete</Button>
+        : undefined}
       </form>
     );
   }

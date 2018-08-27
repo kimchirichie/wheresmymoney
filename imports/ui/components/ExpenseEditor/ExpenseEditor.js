@@ -132,9 +132,9 @@ class ExpenseEditor extends React.Component {
         </FormGroup>
         <FormGroup>
           <ControlLabel>Payment</ControlLabel>
-          <Radio name="payment" value="credit" inline defaultChecked>credit</Radio>
-          <Radio name="payment" value="debit" inline>debit</Radio>
-          <Radio name="payment" value="cash" inline>cash</Radio>
+          <Radio name="payment" value="credit" inline defaultChecked={exp.payment === 'credit'} >credit</Radio>
+          <Radio name="payment" value="debit" inline defaultChecked={exp.payment === 'debit'}>debit</Radio>
+          <Radio name="payment" value="cash" inline defaultChecked={exp.payment === 'cash'}>cash</Radio>
         </FormGroup>
         <Checkbox name="recurring">
             Recurring?

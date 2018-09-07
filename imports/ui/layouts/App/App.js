@@ -14,8 +14,11 @@ import Authenticated from '../../components/Authenticated/Authenticated';
 import Public from '../../components/Public/Public';
 import Index from '../../pages/Index/Index';
 import Expenses from '../../pages/Expenses/Expenses';
-import NewExpense from '../../pages/NewExpense/NewExpense';
-import EditExpense from '../../pages/EditExpense/EditExpense';
+import NewExpense from '../../pages/Expenses/NewExpense';
+import EditExpense from '../../pages/Expenses/EditExpense';
+import Bills from '../../pages/Bills/Bills';
+import NewBill from '../../pages/Bills/NewBill';
+import EditBill from '../../pages/Bills/EditBill';
 import Signup from '../../pages/Signup/Signup';
 import Login from '../../pages/Login/Login';
 import Logout from '../../pages/Logout/Logout';
@@ -27,7 +30,6 @@ import NotFound from '../../pages/NotFound/NotFound';
 import Footer from '../../components/Footer/Footer';
 import Terms from '../../pages/Terms/Terms';
 import Privacy from '../../pages/Privacy/Privacy';
-import ExamplePage from '../../pages/ExamplePage/ExamplePage';
 import VerifyEmailAlert from '../../components/VerifyEmailAlert/VerifyEmailAlert';
 import { onLogin, onLogout } from '../../../modules/redux/actions';
 
@@ -98,6 +100,9 @@ class App extends React.Component {
             <Authenticated exact path="/expenses" component={Expenses} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
             <Authenticated exact path="/expenses/new" component={NewExpense} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
             <Authenticated exact path="/expenses/:_id/edit" component={EditExpense} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
+            <Authenticated exact path="/bills" component={Bills} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
+            <Authenticated exact path="/bills/new" component={NewBill} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
+            <Authenticated exact path="/bills/:_id/edit" component={EditBill} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
             <Authenticated exact path="/profile" component={Profile} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
             <Public path="/signup" component={Signup} {...props} {...state} />
             <Public path="/login" component={Login} {...props} {...state} />
@@ -107,7 +112,6 @@ class App extends React.Component {
             <Route name="reset-password" path="/reset-password/:token" component={ResetPassword} />
             <Route name="terms" path="/terms" component={Terms} />
             <Route name="privacy" path="/privacy" component={Privacy} />
-            <Route name="examplePage" path="/example-page" component={ExamplePage} />
             <Route component={NotFound} />
           </Switch>
         </Grid>

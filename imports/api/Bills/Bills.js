@@ -3,21 +3,21 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
-const Expenses = new Mongo.Collection('expenses');
+const Bills = new Mongo.Collection('bills');
 
-Expenses.allow({
+Bills.allow({
   insert: () => false,
   update: () => false,
   remove: () => false,
 });
 
-Expenses.deny({
+Bills.deny({
   insert: () => true,
   update: () => true,
   remove: () => true,
 });
 
-Expenses.schema = new SimpleSchema({
+Bills.schema = new SimpleSchema({
   owner: {
     type: String,
     label: 'The ID of the user this document belongs to.',
@@ -38,26 +38,30 @@ Expenses.schema = new SimpleSchema({
   },
   date: {
     type: Date,
-    label: 'The date of the expense.',
+    label: 'The date of the bill.',
   },
   amount: {
     type: Number,
-    label: 'The price of the expense.',
+    label: 'The price of the bill.',
   },
   category: {
     type: String,
-    label: 'The category of the expense.',
+    label: 'The category of the bill.',
   },
   payment: {
     type: String,
-    label: 'The type of the expense.',
+    label: 'The type of the bill.',
   },
   description: {
     type: String,
-    label: 'The description of the expense.',
+    label: 'The description of the bill.',
+  },
+  frequency: {
+    type: String,
+    label: 'Recurring bill frequency.',
   },
 });
 
-Expenses.attachSchema(Expenses.schema);
+Bills.attachSchema(Bills.schema);
 
-export default Expenses;
+export default Bills;

@@ -5,7 +5,6 @@ import { Table, Button, FormGroup, FormControl, InputGroup } from 'react-bootstr
 import styled from 'styled-components';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Bert } from 'meteor/themeteorchef:bert';
 import moment from 'moment';
 import { ReactiveVar } from 'meteor/reactive-var';
 import ExpensesCollection from '../../../api/Expenses/Expenses';
@@ -31,7 +30,7 @@ class Expenses extends React.Component {
   render() {
     return (!this.props.loading || this.props.expenses.length ? (
       <StyledExpenses>
-        <Link className="btn btn-success d-block" style={{display:"block"}} to={`${this.props.match.url}/new`}>Add Expense</Link>
+        <Link className="btn btn-success d-block" style={{ display: 'block' }} to={`${this.props.match.url}/new`}>Add Expense</Link>
         <br />
         <form onSubmit={event => event.preventDefault()}>
           <FormGroup>

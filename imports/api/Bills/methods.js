@@ -3,36 +3,37 @@
 
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check';
-import Expenses from './Expenses';
+import Bills from './Bills';
 import handleMethodException from '../../modules/handle-method-exception';
 import rateLimit from '../../modules/rate-limit';
 
 Meteor.methods({
-  'expenses.findOne': function expensesFindOne(expenseId) {
-    check(expenseId, Match.OneOf(String, undefined));
+  'bills.findOne': function billsFindOne(billId) {
+    check(billId, Match.OneOf(String, undefined));
 
     try {
-      return Expenses.findOne(expenseId);
+      return Bills.findOne(billId);
     } catch (exception) {
       handleMethodException(exception);
     }
   },
-  'expenses.insert': function expensesInsert(exp) {
+  'bills.insert': function billsInsert(exp) {
     check(exp, {
       date: Date,
       amount: Number,
       category: String,
       payment: String,
       description: String,
+      frequency: String,
     });
 
     try {
-      return Expenses.insert({ owner: this.userId, ...exp });
+      return Bills.insert({ owner: this.userId, ...exp });
     } catch (exception) {
       handleMethodException(exception);
     }
   },
-  'expenses.update': function expensesUpdate(exp) {
+  'bills.update': function billsUpdate(exp) {
     check(exp, {
       _id: String,
       date: Date,
@@ -40,33 +41,34 @@ Meteor.methods({
       category: String,
       payment: String,
       description: String,
+      frequency: String,
     });
 
     try {
-      const expenseId = exp._id;
-      const expToUpdate = Expenses.findOne(expenseId, { fields: { owner: 1 } });
+      const billId = exp._id;
+      const expToUpdate = Bills.findOne(billId, { fields: { owner: 1 } });
 
       if (expToUpdate.owner === this.userId) {
-        Expenses.update(expenseId, { $set: exp });
-        return expenseId; // Return _id so we can redirect to expense after update.
+        Bills.update(billId, { $set: exp });
+        return billId; // Return _id so we can redirect to bill after update.
       }
 
-      throw new Meteor.Error('403', 'Sorry, pup. You\'re not allowed to edit this expense.');
+      throw new Meteor.Error('403', 'Sorry, pup. You\'re not allowed to edit this bill.');
     } catch (exception) {
       handleMethodException(exception);
     }
   },
-  'expenses.remove': function expensesRemove(expenseId) {
-    check(expenseId, String);
+  'bills.remove': function billsRemove(billId) {
+    check(billId, String);
 
     try {
-      const expToRemove = Expenses.findOne(expenseId, { fields: { owner: 1 } });
+      const expToRemove = Bills.findOne(billId, { fields: { owner: 1 } });
 
       if (expToRemove.owner === this.userId) {
-        return Expenses.remove(expenseId);
+        return Bills.remove(billId);
       }
 
-      throw new Meteor.Error('403', 'Sorry, pup. You\'re not allowed to delete this expense.');
+      throw new Meteor.Error('403', 'Sorry, pup. You\'re not allowed to delete this bill.');
     } catch (exception) {
       handleMethodException(exception);
     }
@@ -75,9 +77,9 @@ Meteor.methods({
 
 rateLimit({
   methods: [
-    'expenses.insert',
-    'expenses.update',
-    'expenses.remove',
+    'bills.insert',
+    'bills.update',
+    'bills.remove',
   ],
   limit: 5,
   timeRange: 1000,

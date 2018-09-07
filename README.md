@@ -1,10 +1,17 @@
 # Building production package
 
-Run the following command to export settings, and build production
+Run the following command to build production tarball
 
 ```sh
-$ export METEOR_SETTINGS="$(cat settings-development.json )"
 $ meteor build /output/path --server-only
+```
+
+# Export settings on production
+
+Settings has to be set with env var. Use the settings JSON file to get settings.
+
+```sh
+$ export METEOR_SETTINGS="$(cat settings.json)"
 ```
 
 # Unpack and run server
@@ -12,7 +19,7 @@ $ meteor build /output/path --server-only
 Unpack, install packages, and run forever
 
 ```sh
-$ tar -xzf moneyapp.tar.gz
+$ tar -xzf foodoughh.tar.gz
 $ (cd bundle/programs/server && npm install)
 $ forver start bundle/main.js
 ```

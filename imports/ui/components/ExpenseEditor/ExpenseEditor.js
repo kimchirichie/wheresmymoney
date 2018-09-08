@@ -34,7 +34,7 @@ const categories = [
   'other income',
 ];
 
-const frequency = [
+const rosetta = [
   { label: 'monthly', moment: [1, 'months'] },
   { label: 'bimonthly', moment: [15, 'days'] },
   { label: 'quarterly', moment: [4, 'months'] },
@@ -71,8 +71,6 @@ class ExpenseEditor extends React.Component {
   }
 
   handleSubmit(form) {
-    const { history } = this.props;
-    const existingExpense = this.props.exp && this.props.exp._id;
     const exp = {
       date: new Date(form.date.value),
       amount: Number(form.amount.value),
@@ -80,24 +78,32 @@ class ExpenseEditor extends React.Component {
       payment: form.payment.value.trim(),
       description: form.description.value.trim(),
     };
+    const existingExpense = this.props.exp && this.props.exp._id;
+    if (existingExpense) exp._id = existingExpense;
     if (this.props.bill) exp.frequency = form.frequency.value.trim();
-    const item = this.props.bill
+    this.handleUpsert(exp);
+  }
+
+  handleUpsert(exp, isExpense = false) {
+    console.log(exp)
+    const { history } = this.props;
+    const existingExpense = exp && exp._id;
+    const item = isExpense || !this.props.bill
       ? {
-        methodToCall: existingExpense ? 'bills.update' : 'bills.insert',
-        confirmation: existingExpense ? 'Bill saved!' : 'Bill updated!',
-        url: '/bills',
-      }
-      : {
         methodToCall: existingExpense ? 'expenses.update' : 'expenses.insert',
         confirmation: existingExpense ? 'Expense saved!' : 'Expense updated!',
         url: '/expenses',
+      }
+      : {
+        methodToCall: existingExpense ? 'bills.update' : 'bills.insert',
+        confirmation: existingExpense ? 'Bill saved!' : 'Bill updated!',
+        url: '/bills',
       };
-    if (existingExpense) exp._id = existingExpense;
     Meteor.call(item.methodToCall, exp, (error) => {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
-        this.form.reset();
+        if (this.form) this.form.reset();
         Bert.alert(item.confirmation, 'success');
         history.push(item.url);
       }
@@ -120,8 +126,28 @@ class ExpenseEditor extends React.Component {
     });
   }
 
-  handlePayBill(exp) {
-    console.log(exp);
+  handlePayBill(bill) {
+    if (!confirm('Are you sure you want to proceed with payment?')) return;
+    this.handleUpsert({
+      date: bill.date,
+      amount: bill.amount,
+      category: bill.category,
+      payment: bill.payment,
+      description: bill.description,
+    }, true);
+
+    const period = bill.frequency.split(',');
+    const nextDate = moment(bill.date).add(period[0], period[1]).toDate();
+    console.log(bill)
+    this.handleUpsert({
+      _id: bill._id,
+      date: nextDate,
+      amount: bill.amount,
+      category: bill.category,
+      payment: bill.payment,
+      frequency: bill.frequency,
+      description: bill.description,
+    }, false);
   }
 
   renderDate(exp) {
@@ -193,9 +219,9 @@ class ExpenseEditor extends React.Component {
             componentClass="select"
             name="frequency"
             placeholder="select frequency"
-            defaultValue={exp && exp.frequency ? exp.frequency : frequency[0]}
+            defaultValue={exp && exp.frequency ? exp.frequency : rosetta[0]}
           >
-            {frequency.map(f => <option key={f.label} value={f.moment}>{f.label}</option>)}
+            {rosetta.map(stone => <option key={stone.label} value={stone.moment}>{stone.label}</option>)}
           </FormControl>
         </FormGroup>
       )

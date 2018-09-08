@@ -16,6 +16,19 @@ const StyledBills = styled.div`
   }
 `;
 
+const rosetta = [
+  { label: 'monthly', moment: [1, 'months'] },
+  { label: 'bimonthly', moment: [15, 'days'] },
+  { label: 'quarterly', moment: [4, 'months'] },
+  { label: 'every week', moment: [1, 'weeks'] },
+  { label: 'every 2 weeks', moment: [2, 'weeks'] },
+];
+
+const labelFreq = (frequency) => {
+  const stone = rosetta.find(p => p.moment.toString() === frequency);
+  return stone ? stone.label : frequency;
+};
+
 const Bills = props =>
   ((!props.loading || props.bills.length) ?
     <StyledBills>
@@ -40,7 +53,7 @@ const Bills = props =>
                 <td>{ moment.utc(date).format('MMM/D') }</td>
                 <td className="text-right">{ amount.toFixed(2) }</td>
                 <td className="hidden-xs hidden-sm">{ category }</td>
-                <td className="hidden-xs hidden-sm">{ frequency }</td>
+                <td className="hidden-xs hidden-sm">{ labelFreq(frequency) }</td>
                 <td>{ description }</td>
               </tr>
             ))}

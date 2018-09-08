@@ -4,7 +4,6 @@ import autoBind from 'react-autobind';
 import { Row, Col, Alert, FormGroup, ControlLabel, Button } from 'react-bootstrap';
 import { Accounts } from 'meteor/accounts-base';
 import { Bert } from 'meteor/themeteorchef:bert';
-import validate from '../../../modules/validate';
 
 class ResetPassword extends React.Component {
   constructor(props) {
@@ -12,40 +11,11 @@ class ResetPassword extends React.Component {
     autoBind(this);
   }
 
-  componentDidMount() {
-    const component = this;
-
-    validate(component.form, {
-      rules: {
-        newPassword: {
-          required: true,
-          minlength: 6,
-        },
-        repeatNewPassword: {
-          required: true,
-          minlength: 6,
-          equalTo: '[name="newPassword"]',
-        },
-      },
-      messages: {
-        newPassword: {
-          required: 'Enter a new password, please.',
-          minlength: 'Use at least six characters, please.',
-        },
-        repeatNewPassword: {
-          required: 'Repeat your new password, please.',
-          equalTo: 'Hmm, your passwords don\'t match. Try again?',
-        },
-      },
-      submitHandler() { component.handleSubmit(component.form); },
-    });
-  }
-
-  handleSubmit(form) {
+  handleSubmit() {
     const { match, history } = this.props;
     const { token } = match.params;
 
-    Accounts.resetPassword(token, form.newPassword.value, (error) => {
+    Accounts.resetPassword(token, this.form.newPassword.value, (error) => {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
@@ -64,7 +34,7 @@ class ResetPassword extends React.Component {
               To reset your password, enter a new one below. You will be logged in
   with your new password.
             </Alert>
-            <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
+            <form ref={form => (this.form = form)} onSubmit={() => this.handleSubmit()}>
               <FormGroup>
                 <ControlLabel>New Password</ControlLabel>
                 <input

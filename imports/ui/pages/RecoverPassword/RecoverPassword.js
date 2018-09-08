@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { Accounts } from 'meteor/accounts-base';
 import { Bert } from 'meteor/themeteorchef:bert';
 import AccountPageFooter from '../../components/AccountPageFooter/AccountPageFooter';
-import validate from '../../../modules/validate';
 
 class RecoverPassword extends React.Component {
   constructor(props) {
@@ -14,29 +13,9 @@ class RecoverPassword extends React.Component {
     autoBind(this);
   }
 
-  componentDidMount() {
-    const component = this;
-
-    validate(component.form, {
-      rules: {
-        emailAddress: {
-          required: true,
-          email: true,
-        },
-      },
-      messages: {
-        emailAddress: {
-          required: 'Need an email address here.',
-          email: 'Is this email address correct?',
-        },
-      },
-      submitHandler() { component.handleSubmit(component.form); },
-    });
-  }
-
-  handleSubmit(form) {
+  handleSubmit() {
     const { history } = this.props;
-    const email = form.emailAddress.value;
+    const email = this.form.emailAddress.value;
 
     Accounts.forgotPassword({ email }, (error) => {
       if (error) {
@@ -57,7 +36,7 @@ class RecoverPassword extends React.Component {
             <Alert bsStyle="info">
               Enter your email address below to receive a link to reset your password.
             </Alert>
-            <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
+            <form ref={form => (this.form = form)} onSubmit={() => this.handleSubmit()}>
               <FormGroup>
                 <ControlLabel>Email Address</ControlLabel>
                 <input

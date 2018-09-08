@@ -6,7 +6,6 @@ import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
 import OAuthLoginButtons from '../../components/OAuthLoginButtons/OAuthLoginButtons';
 import AccountPageFooter from '../../components/AccountPageFooter/AccountPageFooter';
-import validate from '../../../modules/validate';
 
 class Login extends React.Component {
   constructor(props) {
@@ -14,34 +13,8 @@ class Login extends React.Component {
     autoBind(this);
   }
 
-  componentDidMount() {
-    const component = this;
-
-    validate(component.form, {
-      rules: {
-        emailAddress: {
-          required: true,
-          email: true,
-        },
-        password: {
-          required: true,
-        },
-      },
-      messages: {
-        emailAddress: {
-          required: 'Need an email address here.',
-          email: 'Is this email address correct?',
-        },
-        password: {
-          required: 'Need a password here.',
-        },
-      },
-      submitHandler() { component.handleSubmit(component.form); },
-    });
-  }
-
-  handleSubmit(form) {
-    Meteor.loginWithPassword(form.emailAddress.value, form.password.value, (error) => {
+  handleSubmit() {
+    Meteor.loginWithPassword(this.form.emailAddress.value, this.form.password.value, (error) => {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
@@ -67,7 +40,7 @@ class Login extends React.Component {
                 />
               </Col>
             </Row>
-            <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
+            <form ref={form => (this.form = form)} onSubmit={() => this.handleSubmit()}>
               <FormGroup>
                 <ControlLabel>Email Address</ControlLabel>
                 <input

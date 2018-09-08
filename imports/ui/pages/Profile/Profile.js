@@ -14,7 +14,6 @@ import { Bert } from 'meteor/themeteorchef:bert';
 import { withTracker } from 'meteor/react-meteor-data';
 import InputHint from '../../components/InputHint/InputHint';
 import AccountPageFooter from '../../components/AccountPageFooter/AccountPageFooter';
-import validate from '../../../modules/validate';
 
 const StyledProfile = styled.div`
   .LoggedInWith {
@@ -71,56 +70,6 @@ class Profile extends React.Component {
     autoBind(this);
   }
 
-  componentDidMount() {
-    const component = this;
-
-    validate(component.form, {
-      rules: {
-        firstName: {
-          required: true,
-        },
-        lastName: {
-          required: true,
-        },
-        emailAddress: {
-          required: true,
-          email: true,
-        },
-        currentPassword: {
-          required() {
-            // Only required if newPassword field has a value.
-            return component.form.newPassword.value.length > 0;
-          },
-        },
-        newPassword: {
-          required() {
-            // Only required if currentPassword field has a value.
-            return component.form.currentPassword.value.length > 0;
-          },
-        },
-      },
-      messages: {
-        firstName: {
-          required: 'What\'s your first name?',
-        },
-        lastName: {
-          required: 'What\'s your last name?',
-        },
-        emailAddress: {
-          required: 'Need an email address here.',
-          email: 'Is this email address correct?',
-        },
-        currentPassword: {
-          required: 'Need your current password if changing.',
-        },
-        newPassword: {
-          required: 'Need your new password if changing.',
-        },
-      },
-      submitHandler() { component.handleSubmit(component.form); },
-    });
-  }
-
   getUserType(user) {
     const userToCheck = user;
     delete userToCheck.services.resume;
@@ -151,13 +100,13 @@ class Profile extends React.Component {
     }
   }
 
-  handleSubmit(form) {
+  handleSubmit() {
     const profile = {
-      emailAddress: form.emailAddress.value,
+      emailAddress: this.form.emailAddress.value,
       profile: {
         name: {
-          first: form.firstName.value,
-          last: form.lastName.value,
+          first: this.form.firstName.value,
+          last: this.form.lastName.value,
         },
       },
     };
@@ -170,13 +119,13 @@ class Profile extends React.Component {
       }
     });
 
-    if (form.newPassword.value) {
-      Accounts.changePassword(form.currentPassword.value, form.newPassword.value, (error) => {
+    if (this.form.newPassword.value) {
+      Accounts.changePassword(this.form.currentPassword.value, this.form.newPassword.value, (error) => {
         if (error) {
           Bert.alert(error.reason, 'danger');
         } else {
-          form.currentPassword.value = ''; // eslint-disable-line no-param-reassign
-          form.newPassword.value = ''; // eslint-disable-line no-param-reassign
+          this.form.currentPassword.value = ''; // eslint-disable-line no-param-reassign
+          this.form.newPassword.value = ''; // eslint-disable-line no-param-reassign
         }
       });
     }
@@ -277,7 +226,7 @@ class Profile extends React.Component {
         <Row>
           <Col xs={12} sm={6} md={4}>
             <h4 className="page-header">Edit Profile</h4>
-            <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
+            <form ref={form => (this.form = form)} onSubmit={() => this.handleSubmit()}>
               {this.renderProfileForm(loading, user)}
             </form>
             <AccountPageFooter>

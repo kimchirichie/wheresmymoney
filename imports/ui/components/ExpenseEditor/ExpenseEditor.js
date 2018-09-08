@@ -6,7 +6,6 @@ import moment from 'moment';
 import { FormGroup, ControlLabel, Button, FormControl, Radio, Checkbox } from 'react-bootstrap';
 import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
-import validate from '../../../modules/validate';
 
 const categories = [
   'dining',
@@ -43,44 +42,17 @@ const rosetta = [
 ];
 
 class ExpenseEditor extends React.Component {
-  componentDidMount() {
-    const component = this;
-    const rules = {
-      date: { required: true },
-      amount: { required: true },
-      category: { required: true },
-      payment: { required: true },
-      description: { required: true },
-    };
-    const messages = {
-      date: { required: 'needs date to be filled in' },
-      amount: { required: 'needs amount to be filled in' },
-      category: { required: 'needs category to be filled in' },
-      payment: { required: 'needs payment to be filled in' },
-      description: { required: 'needs description to be filled in' },
-    };
-    if (this.props.bill) {
-      rules.frequency = { required: true };
-      messages.frequency = { required: 'needs frequency to be filled in' };
-    }
-    validate(component.form, {
-      rules,
-      messages,
-      submitHandler() { component.handleSubmit(component.form); },
-    });
-  }
-
-  handleSubmit(form) {
+  handleSubmit() {
     const exp = {
-      date: new Date(form.date.value),
-      amount: Number(form.amount.value),
-      category: form.category.value.trim(),
-      payment: form.payment.value.trim(),
-      description: form.description.value.trim(),
+      date: new Date(this.form.date.value),
+      amount: Number(this.form.amount.value),
+      category: this.form.category.value.trim(),
+      payment: this.form.payment.value.trim(),
+      description: this.form.description.value.trim(),
     };
     const existingExpense = this.props.exp && this.props.exp._id;
     if (existingExpense) exp._id = existingExpense;
-    if (this.props.bill) exp.frequency = form.frequency.value.trim();
+    if (this.props.bill) exp.frequency = this.form.frequency.value.trim();
     this.handleUpsert(exp);
   }
 
@@ -271,7 +243,7 @@ class ExpenseEditor extends React.Component {
   render() {
     const { exp } = this.props;
     return (
-      <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
+      <form ref={form => (this.form = form)} onSubmit={() => this.handleSubmit()}>
         { this.renderDate(exp) }
         { this.renderAmount(exp) }
         { this.renderCategory(exp) }

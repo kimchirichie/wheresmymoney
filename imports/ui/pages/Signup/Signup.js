@@ -9,7 +9,6 @@ import { Bert } from 'meteor/themeteorchef:bert';
 import OAuthLoginButtons from '../../components/OAuthLoginButtons/OAuthLoginButtons';
 import InputHint from '../../components/InputHint/InputHint';
 import AccountPageFooter from '../../components/AccountPageFooter/AccountPageFooter';
-import validate from '../../../modules/validate';
 
 class Signup extends React.Component {
   constructor(props) {
@@ -17,56 +16,16 @@ class Signup extends React.Component {
     autoBind(this);
   }
 
-  componentDidMount() {
-    const component = this;
-
-    validate(component.form, {
-      rules: {
-        firstName: {
-          required: true,
-        },
-        lastName: {
-          required: true,
-        },
-        emailAddress: {
-          required: true,
-          email: true,
-        },
-        password: {
-          required: true,
-          minlength: 6,
-        },
-      },
-      messages: {
-        firstName: {
-          required: 'What\'s your first name?',
-        },
-        lastName: {
-          required: 'What\'s your last name?',
-        },
-        emailAddress: {
-          required: 'Need an email address here.',
-          email: 'Is this email address correct?',
-        },
-        password: {
-          required: 'Need a password here.',
-          minlength: 'Please use at least six characters.',
-        },
-      },
-      submitHandler() { component.handleSubmit(component.form); },
-    });
-  }
-
-  handleSubmit(form) {
+  handleSubmit() {
     const { history } = this.props;
 
     Accounts.createUser({
-      email: form.emailAddress.value,
-      password: form.password.value,
+      email: this.form.emailAddress.value,
+      password: this.form.password.value,
       profile: {
         name: {
-          first: form.firstName.value,
-          last: form.lastName.value,
+          first: this.form.firstName.value,
+          last: this.form.lastName.value,
         },
       },
     }, (error) => {
@@ -97,7 +56,7 @@ class Signup extends React.Component {
                 />
               </Col>
             </Row>
-            <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
+            <form ref={form => (this.form = form)} onSubmit={() => this.handleSubmit()}>
               <Row>
                 <Col xs={6}>
                   <FormGroup>

@@ -10,24 +10,24 @@
     "MAIL_URL": "",
     "OAuth": {
       "facebook": {
-        "enabled": true,
+        "enabled": false,
         "appId": "",
         "secret": "",
         "loginStyle": "popup"
       },
       "google": {
-        "enabled": true,
+        "enabled": false,
         "clientId": "",
         "secret": "",
         "loginStyle": "popup"
       },
       "github": {
-        "enabled": true,
+        "enabled": false,
         "clientId": "",
         "secret": "",
         "loginStyle": "popup"
       }
     },
-    "supportEmail": "Customer Support <support@product.com>"
+    "supportEmail": "Foodough Bot <foodoughbot@gmail.com>"
   }
 }

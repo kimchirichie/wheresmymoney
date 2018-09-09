@@ -42,7 +42,8 @@ const rosetta = [
 ];
 
 class ExpenseEditor extends React.Component {
-  handleSubmit() {
+  handleSubmit(e) {
+    e.preventDefault();
     const exp = {
       date: new Date(this.form.date.value),
       amount: Number(this.form.amount.value),
@@ -57,7 +58,6 @@ class ExpenseEditor extends React.Component {
   }
 
   handleUpsert(exp, isExpense = false) {
-    console.log(exp)
     const { history } = this.props;
     const existingExpense = exp && exp._id;
     const item = isExpense || !this.props.bill
@@ -243,7 +243,7 @@ class ExpenseEditor extends React.Component {
   render() {
     const { exp } = this.props;
     return (
-      <form ref={form => (this.form = form)} onSubmit={() => this.handleSubmit()}>
+      <form ref={form => (this.form = form)} onSubmit={e => this.handleSubmit(e)}>
         { this.renderDate(exp) }
         { this.renderAmount(exp) }
         { this.renderCategory(exp) }

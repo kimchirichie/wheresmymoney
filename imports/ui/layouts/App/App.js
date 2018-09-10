@@ -31,6 +31,7 @@ import Footer from '../../components/Footer/Footer';
 import Terms from '../../pages/Terms/Terms';
 import Privacy from '../../pages/Privacy/Privacy';
 import VerifyEmailAlert from '../../components/VerifyEmailAlert/VerifyEmailAlert';
+import Stats from '../../pages/Stats/Stats';
 import { onLogin, onLogout } from '../../../modules/redux/actions';
 
 const StyledApp = styled.div`
@@ -104,6 +105,7 @@ class App extends React.Component {
             <Authenticated exact path="/bills/new" component={NewBill} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
             <Authenticated exact path="/bills/:_id/edit" component={EditBill} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
             <Authenticated exact path="/profile" component={Profile} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
+            <Authenticated exact path="/stats" component={Stats} setAfterLoginPath={setAfterLoginPath} {...props} {...state} />
             <Public path="/signup" component={Signup} {...props} {...state} />
             <Public path="/login" component={Login} {...props} {...state} />
             <Route path="/logout" render={routeProps => <Logout {...routeProps} setAfterLoginPath={setAfterLoginPath} />} {...props} {...state} />

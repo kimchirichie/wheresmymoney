@@ -6,40 +6,7 @@ import moment from 'moment';
 import { FormGroup, ControlLabel, Button, FormControl, Radio, Checkbox } from 'react-bootstrap';
 import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
-
-const categories = [
-  'dining',
-  'coffee',
-  'transportation',
-  'leisure',
-  'fitness',
-  'fashion',
-  'accommodation',
-  'groceries',
-  'entertainment',
-  'living',
-  'education',
-  'car',
-  'phone',
-  'fee',
-  'alcohol',
-  'electronics',
-  'gift',
-  'home',
-  'donation',
-  'insurance',
-  'work',
-  'refund',
-  'other income',
-];
-
-const rosetta = [
-  { label: 'monthly', moment: [1, 'months'] },
-  { label: 'bimonthly', moment: [15, 'days'] },
-  { label: 'quarterly', moment: [4, 'months'] },
-  { label: 'every week', moment: [1, 'weeks'] },
-  { label: 'every 2 weeks', moment: [2, 'weeks'] },
-];
+import { categories, rosetta } from '../../../api/Expenses/categories';
 
 class ExpenseEditor extends React.Component {
   handleSubmit(e) {

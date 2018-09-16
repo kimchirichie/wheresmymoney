@@ -3,9 +3,11 @@
 
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check';
+import moment from 'moment';
 import Expenses from './Expenses';
 import handleMethodException from '../../modules/handle-method-exception';
 import rateLimit from '../../modules/rate-limit';
+import { categories, incomes } from './categories';
 
 Meteor.methods({
   'expenses.findOne': function expensesFindOne(expenseId) {
@@ -71,6 +73,50 @@ Meteor.methods({
       handleMethodException(exception);
     }
   },
+  'expenses.stats': function expensesStats() {
+    const increment = 'month'; // or week
+    const quantity = 6;
+
+    if (!['month', 'week'].includes(increment)) { throw new Meteor.Error('403', 'Sorry, bud. You only get stats in month or week increments'); }
+    if (quantity < 1 || quantity > 6) { throw new Meteor.Error('403', 'Sorry, bud. You only get 1-6 quantities of data points'); }
+
+    const format = increment === 'month' ? 'MMM' : moment.defaultFormat;
+    const start = moment().startOf(increment).subtract(quantity - 1, increment);
+    const userId = Meteor.userId();
+    const expenses = Expenses.find({ owner: userId, date: { $gte: start.toDate() } }, { sort: { date: 1 } }).fetch();
+    const result = new Array(quantity).fill(0).map(() => {
+      const res = { date: start.clone().format(format) };
+      categories.forEach((c) => { res[c] = 0; });
+      res.spending = 0;
+      res.earning = 0;
+      start.add(1, increment);
+      return res;
+    });
+
+    const getIndex = (inc, qty, exp) => {
+      if (inc === 'week') {
+        return qty - 1 - moment().endOf(inc).diff(exp.date, inc);
+      } else if (inc === 'month') {
+        const startMonth = moment(exp.date).month();
+        let endMonth = moment().endOf(inc).month();
+        if (endMonth < startMonth) endMonth += 12;
+        return qty - 1 - (endMonth - startMonth);
+      }
+      return false;
+    };
+    expenses.forEach((exp) => {
+      const index = getIndex(increment, quantity, exp);
+      if (exp.category) result[index][exp.category] += exp.amount;
+
+      if (incomes.includes(exp.category)) {
+        result[index].spending += exp.amount;
+      } else {
+        result[index].earning += exp.amount;
+      }
+    });
+
+    return result;
+  },
 });
 
 rateLimit({
@@ -78,6 +124,7 @@ rateLimit({
     'expenses.insert',
     'expenses.update',
     'expenses.remove',
+    'expenses.stats',
   ],
   limit: 5,
   timeRange: 1000,

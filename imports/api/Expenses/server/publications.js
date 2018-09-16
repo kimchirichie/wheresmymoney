@@ -22,3 +22,8 @@ Meteor.publish('expenses.edit', function expensesEdit(expenseId) {
   check(expenseId, String);
   return Expenses.find({ _id: expenseId, owner: this.userId });
 });
+
+Meteor.publish('expenses.stats', function expensesStats() {
+  const query = { owner: this.userId };
+  return Expenses.find(query);
+});

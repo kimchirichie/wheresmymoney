@@ -32,10 +32,11 @@ class Authenticated extends React.Component {
 Authenticated.defaultProps = {
   path: '',
   exact: false,
+  loggingIn: false,
 };
 
 Authenticated.propTypes = {
-  loggingIn: PropTypes.bool.isRequired,
+  loggingIn: PropTypes.bool,
   authenticated: PropTypes.bool.isRequired,
   component: PropTypes.func.isRequired,
   setAfterLoginPath: PropTypes.func.isRequired,

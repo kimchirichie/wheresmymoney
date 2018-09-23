@@ -32,7 +32,7 @@ import Terms from '../../pages/Terms/Terms';
 import Privacy from '../../pages/Privacy/Privacy';
 import VerifyEmailAlert from '../../components/VerifyEmailAlert/VerifyEmailAlert';
 import Stats from '../../pages/Stats/Stats';
-import { onLogin, onLogout } from '../../../modules/redux/actions';
+import { onLogin, onLogout } from '../../../modules/redux/loginActions';
 
 const StyledApp = styled.div`
   visibility: ${props => (props.ready ? 'visible' : 'hidden')};
@@ -126,19 +126,22 @@ class App extends React.Component {
 App.defaultProps = {
   userId: '',
   emailAddress: '',
+  loading: false,
+  emailVerified: false,
+  authenticated: false,
 };
 
 App.propTypes = {
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
   userId: PropTypes.string,
   emailAddress: PropTypes.string,
-  emailVerified: PropTypes.bool.isRequired,
-  authenticated: PropTypes.bool.isRequired,
+  emailVerified: PropTypes.bool,
+  authenticated: PropTypes.bool,
   handleOnLogin: PropTypes.func.isRequired,
   handleOnLogout: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({ ...state });
+const mapStateToProps = state => ({ ...state.loginReducer });
 const mapDispatchToProps = dispatch => ({
   handleOnLogin: data => dispatch(onLogin(data)),
   handleOnLogout: data => dispatch(onLogout(data)),

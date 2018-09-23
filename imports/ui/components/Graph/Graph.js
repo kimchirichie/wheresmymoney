@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ReactChartkick, { ColumnChart } from 'react-chartkick';
 import Chart from 'chart.js';
 
-import Loading from '../../components/Loading/Loading';
+// import Loading from '../../components/Loading/Loading';
 
 class Graph extends React.Component {
   constructor(props) {
@@ -11,22 +11,25 @@ class Graph extends React.Component {
     ReactChartkick.addAdapter(Chart);
   }
 
-  render() {
-    const earning = this.props.data
-      ? this.props.data.map(r => [r.date, r.earning])
-      : [];
+  renderCategories(data, categories) {
+    if (!data.length) { return null; }
+    const buffer = categories.map(category =>
+      ({ name: category, data: data.map(d => [d.date, d[category]]) }));
+    return buffer.length
+      ? <ColumnChart data={buffer} />
+      : null;
+  }
 
-    return this.state.stats.length
-      ? <ColumnChart data={earning} />
-      : <Loading />;
+  render() {
+    return (
+      <div>
+        { this.renderCategories(this.props.data, ['earning', 'spending']) }
+      </div>
+    );
   }
 }
 
-Graph.defaultProps = {
-  data: [],
-};
-
-Graph.PropTypes = {
+Graph.propTypes = {
   data: PropTypes.array.isRequired,
 };
 

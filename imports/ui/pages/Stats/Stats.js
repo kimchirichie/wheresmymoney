@@ -10,13 +10,17 @@ class Stats extends React.Component {
     this.state = {
       stats: [],
     };
-    Meteor.call('expenses.stats', (error, result) => {
+    this.fetchStats('month', 12);
+  }
+
+  fetchStats(increment, quantity) {
+    Meteor.call('expenses.stats', increment, quantity, (error, result) => {
       this.setState({ stats: result });
     });
   }
 
   render() {
-    return this.state.stats.length
+    return this.state.stats && this.state.stats.length
       ? <Graph data={this.state.stats} />
       : <Loading />;
   }

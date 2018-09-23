@@ -73,12 +73,11 @@ Meteor.methods({
       handleMethodException(exception);
     }
   },
-  'expenses.stats': function expensesStats() {
-    const increment = 'month'; // or week
-    const quantity = 6;
-
+  'expenses.stats': function expensesStats(increment = 'month', quantity = 12) {
+    check(increment, String);
+    check(quantity, Number);
     if (!['month', 'week'].includes(increment)) { throw new Meteor.Error('403', 'Sorry, bud. You only get stats in month or week increments'); }
-    if (quantity < 1 || quantity > 6) { throw new Meteor.Error('403', 'Sorry, bud. You only get 1-6 quantities of data points'); }
+    if (quantity < 1 || quantity > 12) { throw new Meteor.Error('403', 'Sorry, bud. You only get 1-12 quantities of data points'); }
 
     const format = increment === 'month' ? 'MMM' : moment.defaultFormat;
     const start = moment().startOf(increment).subtract(quantity - 1, increment);
@@ -114,7 +113,6 @@ Meteor.methods({
         result[index].earning += exp.amount;
       }
     });
-
     return result;
   },
 });

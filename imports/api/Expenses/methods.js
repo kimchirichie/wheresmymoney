@@ -118,9 +118,9 @@ Meteor.methods({
       }
 
       if (incomes.includes(exp.category)) {
-        row.spending = addd(exp.amount, row.spending);
-      } else {
         row.earning = addd(exp.amount, row.earning);
+      } else {
+        row.spending = addd(exp.amount, row.spending);
       }
     });
 

@@ -85,7 +85,8 @@ Meteor.methods({
     const expenses = Expenses.find({ owner: userId, date: { $gte: start.toDate() } }, { sort: { date: 1 } }).fetch();
     const result = new Array(quantity).fill(0).map(() => {
       const res = { date: start.clone().format(format) };
-      categories.forEach((c) => { res[c] = 0; });
+      res.categories = { other: 0 };
+      categories.forEach((c) => { res.categories[c] = 0; });
       res.spending = 0;
       res.earning = 0;
       start.add(1, increment);
@@ -105,7 +106,12 @@ Meteor.methods({
     };
     expenses.forEach((exp) => {
       const index = getIndex(increment, quantity, exp);
-      if (exp.category) result[index][exp.category] += exp.amount;
+
+      if (!(exp.category in result[index].categories)) {
+        result[index].categories.other += exp.amount;
+      } else if (exp.category) {
+        result[index].categories[exp.category] += exp.amount;
+      }
 
       if (incomes.includes(exp.category)) {
         result[index].spending += exp.amount;

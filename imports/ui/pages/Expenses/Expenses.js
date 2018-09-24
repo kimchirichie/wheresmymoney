@@ -1,12 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { Table, Button, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
+import moment from 'moment';
 import styled from 'styled-components';
+
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
-import moment from 'moment';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { Field, reduxForm } from 'redux-form';
+import {
+  Table,
+  Button,
+  FormGroup,
+  FormControl,
+  InputGroup,
+} from 'react-bootstrap';
+
 import ExpensesCollection from '../../../api/Expenses/Expenses';
 import Loading from '../../components/Loading/Loading';
 import BlankState from '../../components/BlankState/BlankState';
@@ -21,10 +31,21 @@ const StyledExpenses = styled.div`
   }
 `;
 
+const searchBar = field => (
+  <FormGroup>
+    <InputGroup>
+      <FormControl type="text" {...field.input} />
+      <InputGroup.Button>
+        <Button onClick={() => field.onClick()}>Search</Button>
+      </InputGroup.Button>
+    </InputGroup>
+  </FormGroup>
+);
+
 class Expenses extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { searchTerm: '' };
+  search(e) {
+    e.preventDefault();
+    searchTerm.set(this.props.searchTerm);
   }
 
   render() {
@@ -32,15 +53,8 @@ class Expenses extends React.Component {
       <StyledExpenses>
         <Link className="btn btn-success d-block" style={{ display: 'block' }} to={`${this.props.match.url}/new`}>Add Expense</Link>
         <br />
-        <form onSubmit={event => event.preventDefault()}>
-          <FormGroup>
-            <InputGroup>
-              <FormControl type="text" value={this.state.searchTerm} onChange={event => this.setState({ searchTerm: event.target.value })} />
-              <InputGroup.Button>
-                <Button onClick={() => searchTerm.set(this.state.searchTerm)}>Search</Button>
-              </InputGroup.Button>
-            </InputGroup>
-          </FormGroup>
+        <form onSubmit={e => this.search(e)} >
+          <Field name="searchTerm" component={searchBar} onClick={e => this.search(e)} />
         </form>
         {this.props.expenses.length ?
           <Table hover>
@@ -82,17 +96,30 @@ class Expenses extends React.Component {
   }
 }
 
+Expenses.defaultProps = {
+  searchTerm: '',
+};
+
 Expenses.propTypes = {
   loading: PropTypes.bool.isRequired,
   expenses: PropTypes.arrayOf(PropTypes.object).isRequired,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
+  searchTerm: PropTypes.string,
 };
 
+const mapStateToProps = state => ({
+  searchTerm: (state.form.expense && state.form.expense.values)
+    ? state.form.expense.values.searchTerm
+    : undefined,
+});
+
+let ExpenseContainer = connect(mapStateToProps)(Expenses);
+ExpenseContainer = reduxForm({ form: 'expense' })(ExpenseContainer);
 export default withTracker(() => {
   const subscription = Meteor.subscribe('expenses', limit.get(), searchTerm.get());
   return {
     loading: !subscription.ready(),
     expenses: ExpensesCollection.find({}, { sort: { date: -1 } }).fetch(),
   };
-})(Expenses);
+})(ExpenseContainer);

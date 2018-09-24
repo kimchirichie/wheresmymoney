@@ -1,33 +1,32 @@
 import React from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Table } from 'react-bootstrap';
-import styled from 'styled-components';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
-import moment from 'moment';
-import BillsCollection from '../../../api/Bills/Bills';
+
 import Loading from '../../components/Loading/Loading';
 import BlankState from '../../components/BlankState/BlankState';
+import BillsCollection from '../../../api/Bills/Bills';
+import { rosetta } from '../../../api/Expenses/categories';
 
 const StyledBills = styled.div`
   table tbody tr td {
     vertical-align: middle;
   }
+  .due {
+    color: red
+  }
 `;
-
-const rosetta = [
-  { label: 'monthly', moment: [1, 'months'] },
-  { label: 'bimonthly', moment: [15, 'days'] },
-  { label: 'quarterly', moment: [4, 'months'] },
-  { label: 'every week', moment: [1, 'weeks'] },
-  { label: 'every 2 weeks', moment: [2, 'weeks'] },
-];
 
 const labelFreq = (frequency) => {
   const stone = rosetta.find(p => p.moment.toString() === frequency);
   return stone ? stone.label : frequency;
 };
+
+const due = timestamp => moment().diff(timestamp, 'days') > 0;
 
 const Bills = props =>
   ((!props.loading || props.bills.length) ?
@@ -50,7 +49,7 @@ const Bills = props =>
               _id, date, amount, category, description, frequency,
             }) => (
               <tr key={_id} onClick={() => props.history.push(`${props.match.url}/${_id}/edit`)}>
-                <td>{ moment.utc(date).format('MMM/D') }</td>
+                <td className={due(date) ? 'due' : ''}>{ moment.utc(date).format('MMM/D') }</td>
                 <td className="text-right">{ amount.toFixed(2) }</td>
                 <td className="hidden-xs hidden-sm">{ category }</td>
                 <td className="hidden-xs hidden-sm">{ labelFreq(frequency) }</td>
@@ -82,6 +81,6 @@ export default withTracker(() => {
   const subscription = Meteor.subscribe('bills');
   return {
     loading: !subscription.ready(),
-    bills: BillsCollection.find({}, { sort: { date: -1 } }).fetch(),
+    bills: BillsCollection.find({}, { sort: { date: 1 } }).fetch(),
   };
 })(Bills);

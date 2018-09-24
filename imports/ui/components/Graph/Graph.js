@@ -6,7 +6,7 @@ import Chart from 'chart.js';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { incomes, categories } from '../../../api/Expenses/categories';
+import { incomes } from '../../../api/Expenses/categories';
 
 const analyticSelect = field => (
   <FormGroup controlId="formControlsSelect">
@@ -51,18 +51,15 @@ class Graph extends React.Component {
     if (!data.length) { return null; }
     const buffer = ['earning', 'spending'].map(category =>
       ({ name: category, data: data.map(d => [d.date, d[category]]) }));
-    console.log(buffer);
     return buffer.length
       ? <ColumnChart data={buffer} />
       : null;
   }
 
   renderShort(data) {
-    console.log(data);
     const buffer = Object.entries(data.categories)
       .filter(row => !incomes.includes(row[0]) && row[1] !== 0)
       .sort((a, b) => b[1] - a[1]);
-    console.log(buffer);
     return buffer.length
       ? <ColumnChart data={buffer} />
       : null;
@@ -71,9 +68,9 @@ class Graph extends React.Component {
   renderGraph() {
     const { data, graphType, month } = this.props;
     if (graphType === 'earn_&_spend') {
-      return this.renderLong(data, ['earning', 'spending']);
+      return this.renderLong(data);
     } else if (graphType === 'category') {
-      return this.renderShort(data.find(d => d.date === month), categories);
+      return this.renderShort(data.find(d => d.date === month));
     }
     return <p>select graph type</p>;
   }

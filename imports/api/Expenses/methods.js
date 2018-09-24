@@ -104,21 +104,23 @@ Meteor.methods({
       }
       return false;
     };
+
     expenses.forEach((exp) => {
       const index = getIndex(increment, quantity, exp);
 
       if (!(exp.category in result[index].categories)) {
-        result[index].categories.other += exp.amount;
+        result[index].categories.other += Number((exp.amount).toFixed(2));
       } else if (exp.category) {
-        result[index].categories[exp.category] += exp.amount;
+        result[index].categories[exp.category] += Number((exp.amount).toFixed(2));
       }
 
       if (incomes.includes(exp.category)) {
-        result[index].spending += exp.amount;
+        result[index].spending += Number((exp.amount).toFixed(2));
       } else {
-        result[index].earning += exp.amount;
+        result[index].earning += Number((exp.amount).toFixed(2));
       }
     });
+
     return result;
   },
 });

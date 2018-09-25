@@ -36,7 +36,7 @@ const searchBar = field => (
     <InputGroup>
       <FormControl type="text" {...field.input} />
       <InputGroup.Button>
-        <Button onClick={() => field.onClick()}>Search</Button>
+        <Button onClick={e => field.onClick(e)}>Search</Button>
       </InputGroup.Button>
     </InputGroup>
   </FormGroup>
@@ -109,7 +109,7 @@ Expenses.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  searchTerm: (state.form.expense && state.form.expense.values)
+  searchTerm: (state.form.expense && state.form.expense.values && state.form.expense.values.searchTerm)
     ? state.form.expense.values.searchTerm
     : undefined,
 });

@@ -84,13 +84,15 @@ Meteor.methods({
     const userId = Meteor.userId();
     const expenses = Expenses.find({ owner: userId, date: { $gte: start.toDate() } }, { sort: { date: 1 } }).fetch();
     const result = new Array(quantity).fill(0).map(() => {
-      const res = { date: start.clone().format(format) };
-      res.categories = { other: 0 };
-      categories.forEach((c) => { res.categories[c] = 0; });
-      res.spending = 0;
-      res.earning = 0;
+      const x = {};
+      x.date = start.clone().format(format);
+      x.spending = { other: 0 };
+      categories.forEach((c) => { x.spending[c] = 0; });
+      x.category = {};
+      categories.forEach((c) => { x.category[c] = {}; });
+      x.earning = { earn: 0, spend: 0 };
       start.add(1, increment);
-      return res;
+      return x;
     });
 
     const getIndex = (inc, qty, exp) => {
@@ -111,16 +113,26 @@ Meteor.methods({
       const index = getIndex(increment, quantity, exp);
       const row = result[index];
 
-      if (!(exp.category in result[index].categories)) {
-        row.categories.other = addd(exp.amount, row.categories.other);
+      // spending
+      if (!(exp.category in row.spending)) {
+        row.spending.other = addd(exp.amount, row.spending.other);
       } else if (exp.category) {
-        row.categories[exp.category] = addd(exp.amount, row.categories[exp.category]);
+        row.spending[exp.category] = addd(exp.amount, row.spending[exp.category]);
       }
 
-      if (incomes.includes(exp.category)) {
-        row.earning = addd(exp.amount, row.earning);
+      // category
+      if (!(exp.category in row.category)) { row.category[exp.category] = {}; }
+      if (!(exp.description in row.category[exp.category])) {
+        row.category[exp.category][exp.description] = Number(exp.amount.toFixed(2));
       } else {
-        row.spending = addd(exp.amount, row.spending);
+        row.category[exp.category][exp.description] = addd(exp.amount, row.category[exp.category][exp.description]);
+      }
+
+      // earning
+      if (incomes.includes(exp.category)) {
+        row.earning.earn = addd(exp.amount, row.earning.earn);
+      } else {
+        row.earning.spend = addd(exp.amount, row.earning.spend);
       }
     });
 

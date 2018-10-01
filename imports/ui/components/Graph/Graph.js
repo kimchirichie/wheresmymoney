@@ -63,31 +63,32 @@ class Graph extends React.Component {
       : null;
   }
 
-  renderSpendingGraph(data) {
+  renderSpendingGraph(rawData, month) {
+    const data = rawData.find(d => d.date === month);
     const buffer = Object.entries(data.spending)
       .filter(row => !incomes.includes(row[0]) && row[1] !== 0)
       .sort((a, b) => b[1] - a[1]);
     return buffer.length
       ? <ColumnChart data={buffer} />
-      : null;
+      : <p>No data to display</p>;
   }
 
-  renderCategoryGraph(data) {
+  renderCategoryGraph(rawData, month, category) {
+    const data = rawData.find(d => d.date === month).category[category];
     const buffer = Object.entries(data)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10);
     return buffer.length
       ? <ColumnChart data={buffer} />
-      : null;
+      : <p>No data to display</p>;
   }
 
   renderEarnSpendingGraph(data) {
-    if (!data.length) { return null; }
-    const buffer = ['earning', 'spending'].map(category =>
-      ({ name: category, data: data.map(d => [d.date, d[category]]) }));
+    const buffer = ['earn', 'spend'].map(category =>
+      ({ name: category, data: data.map(d => [d.date, d.earning[category]]) }));
     return buffer.length
       ? <ColumnChart data={buffer} />
-      : null;
+      : <p>No data to display</p>;
   }
 
   renderGraph() {
@@ -98,23 +99,22 @@ class Graph extends React.Component {
       category,
     } = this.props;
 
-    if (graphType === 'earning') {
-      return this.renderEarnSpendingGraph(data);
+    if (graphType === 'spending') {
+      return this.renderSpendingGraph(data, month);
     } else if (graphType === 'category') {
-      return this.renderCategoryGraph(data.find(d => d.date === month).category[category]);
-    } else if (graphType === 'spending') {
-      return this.renderSpendingGraph(data.find(d => d.date === month));
+      return this.renderCategoryGraph(data, month, category);
+    } else if (graphType === 'earning') {
+      return this.renderEarnSpendingGraph(data);
     }
     return <p>select graph type</p>;
   }
 
   render() {
-    console.log(this.props.data);
     return (
       <div>
         { this.renderTypeSelect() }
-        { this.renderMonthSelect() }
         { this.renderCategorySelect() }
+        { this.renderMonthSelect() }
         { this.renderGraph() }
       </div>
     );

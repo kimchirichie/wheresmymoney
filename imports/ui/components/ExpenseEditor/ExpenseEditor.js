@@ -77,7 +77,6 @@ class ExpenseEditor extends React.Component {
 
     const period = bill.frequency.split(',');
     const nextDate = moment(bill.date).add(period[0], period[1]).toDate();
-    console.log(bill)
     this.handleUpsert({
       _id: bill._id,
       date: nextDate,

@@ -3,7 +3,6 @@ import { check } from 'meteor/check';
 import Bills from '../Bills';
 
 Meteor.publish('bills', function bills() {
-  console.log(this.userId);
   const query = { owner: this.userId };
   return Bills.find(query, { sort: { date: -1 } });
 });

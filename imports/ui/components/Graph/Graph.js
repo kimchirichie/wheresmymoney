@@ -64,12 +64,30 @@ class Graph extends React.Component {
   }
 
   renderSpendingGraph(rawData, month) {
-    const data = rawData.find(d => d.date === month);
-    const buffer = Object.entries(data.spending)
+    const data = Object.entries(rawData.find(d => d.date === month).spending)
       .filter(row => !incomes.includes(row[0]) && row[1] !== 0)
       .sort((a, b) => b[1] - a[1]);
-    return buffer.length
-      ? <ColumnChart data={buffer} />
+
+    const avg = {};
+    const keyCat = data.map(([key, val]) => key);
+    rawData.forEach(({ spending }) => {
+      Object.keys(spending).forEach(key => {
+        if(!keyCat.includes(key)){return;}
+        avg[key] = (key in avg)
+          ? avg[key] + spending[key]
+          : spending[key];
+      });
+    });
+
+    const average = Object.entries(avg)
+      .map(([key, val]) => [key, Number((val / rawData.length).toFixed(2))]);
+
+    const plotData = [
+      { name: month, data },
+      { name: 'avgerage', data: average },
+    ];
+    return data.length
+      ? <ColumnChart data={plotData} />
       : <p>No data to display</p>;
   }
 

@@ -138,8 +138,8 @@ class ExpenseEditor extends React.Component {
     return (
       <FormGroup>
         <ControlLabel>Payment</ControlLabel>
-        <Radio name="payment" value="debit" inline defaultChecked={exp.payment === 'debit'}>debit</Radio>
         <Radio name="payment" value="credit" inline defaultChecked={exp.payment === 'credit'} >credit</Radio>
+        <Radio name="payment" value="debit" inline defaultChecked={exp.payment === 'debit'}>debit</Radio>
         <Radio name="payment" value="cash" inline defaultChecked={exp.payment === 'cash'}>cash</Radio>
       </FormGroup>
     );
@@ -225,7 +225,7 @@ class ExpenseEditor extends React.Component {
 }
 
 ExpenseEditor.defaultProps = {
-  exp: { payment: 'debit' },
+  exp: { payment: 'credit' },
   bill: false,
 };
 

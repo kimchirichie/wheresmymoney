@@ -84,7 +84,7 @@ class Graph extends React.Component {
 
     const plotData = [
       { name: month, data },
-      { name: 'avgerage', data: average },
+      { name: 'average', data: average },
     ];
     return data.length
       ? <ColumnChart data={plotData} />
